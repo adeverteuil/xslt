@@ -11,7 +11,11 @@ def main():
     input_tree = lxml.etree.parse(options.input)
     transformer = lxml.etree.XSLT(lxml.etree.parse(options.stylesheet))
     result_tree = transformer(input_tree)
-    result_tree.write(options.output, encoding="ISO-8859-1")
+    result_tree.write(
+        options.output,
+        encoding="ISO-8859-1",
+        pretty_print=True,
+        )
 
 
 class StylesheetNameAction(argparse.Action):
