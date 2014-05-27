@@ -27,15 +27,16 @@ class StylesheetNameAction(argparse.Action):
         """
 
         if not values:
-            # Try to find the xml-stylesheet file name in the input XML file.
-            # https://fragmentsofcode.wordpress.com/2010/02/05/get-the-xml-stylesheet-processing-instruction-with-lxml/
-            doc = lxml.etree.parse(namespace.input)
-            namespace.input.seek(0)
-            docroot = doc.getroot()
-            pi = docroot.getprevious()
-            if isinstance(pi, lxml.etree._XSLTProcessingInstruction):
-                namespace.stylesheet = open(pi.attrib['href'], "rb")
-            else:
+            try:
+                # Extract XSL filename from xml-stylesheet processing instruction.
+                doc = lxml.etree.parse(namespace.input)
+                namespace.input.seek(0)
+                pi = doc.xpath("/processing-instruction('xml-stylesheet')")[0]
+                if isinstance(pi, lxml.etree._XSLTProcessingInstruction):
+                    namespace.stylesheet = open(pi.attrib['href'], "rb")
+                else:
+                    raise TypeError
+            except (IndexError, TypeError):
                 # Remove the extension from the input file
                 # and add the .xsl extension.
                 basename = namespace.input.name.rsplit(".", maxsplit=1)[0]
