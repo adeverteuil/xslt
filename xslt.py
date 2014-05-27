@@ -27,9 +27,19 @@ class StylesheetNameAction(argparse.Action):
         """
 
         if not values:
-            # Remove the extension from the input file and add the .xsl extension.
-            basename = namespace.input.name.rsplit(".", maxsplit=1)[0]
-            namespace.stylesheet = open(basename+".xsl", "rb")
+            # Try to find the xml-stylesheet file name in the input XML file.
+            # https://fragmentsofcode.wordpress.com/2010/02/05/get-the-xml-stylesheet-processing-instruction-with-lxml/
+            doc = lxml.etree.parse(namespace.input)
+            namespace.input.seek(0)
+            docroot = doc.getroot()
+            pi = docroot.getprevious()
+            if isinstance(pi, lxml.etree._XSLTProcessingInstruction):
+                namespace.stylesheet = open(pi.attrib['href'], "rb")
+            else:
+                # Remove the extension from the input file
+                # and add the .xsl extension.
+                basename = namespace.input.name.rsplit(".", maxsplit=1)[0]
+                namespace.stylesheet = open(basename+".xsl", "rb")
         else:
             # Pass the received option as is.
             namespace.stylesheet = values
@@ -53,7 +63,11 @@ def process_args(args=sys.argv[1:]):
         nargs="?",
         default=None,
         action=StylesheetNameAction,
-        help="Name of an XSLT file (default same as input but with .xsl extension)",
+        help=(
+            "Name of an XSLT file "
+            "(default try finding xml-stylesheet processing instruction, "
+            "otherwise same as input but with .xsl extension)"
+            ),
         )
     return parser.parse_args(args)
 
