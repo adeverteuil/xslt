@@ -22,6 +22,7 @@ Usage
 -----
 
 ::
+
     usage: xslt.py [-h] input output [stylesheet]
 
     positional arguments:
@@ -63,6 +64,7 @@ Get the source
 ~~~~~~~~~~~~~~
 
 ::
+
     $ # mkproject is from virtualenvwrapper
     $ mkproject xslt
     (xslt)$ git clone https://github.com/adeverteuil/xslt.git .
