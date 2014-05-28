@@ -32,6 +32,11 @@ Usage
                   processing instruction, otherwise same as input but with .xsl
                   extension)
 
+    optional arguments:
+      -h, --help    show this help message and exit
+      -p, --pprint  Nicely indent resulting XML
+
+
 There are three ways to specify the XSLT stylesheet file name. They are tried in this order:
 
 #. If given, the third positional argument;

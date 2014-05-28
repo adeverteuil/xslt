@@ -14,7 +14,7 @@ def main():
     result_tree.write(
         options.output,
         encoding="ISO-8859-1",
-        pretty_print=True,
+        pretty_print=options.pretty_print,
         )
 
 
@@ -73,6 +73,13 @@ def process_args(args=sys.argv[1:]):
             "(default try finding xml-stylesheet processing instruction, "
             "otherwise same as input but with .xsl extension)"
             ),
+        )
+    parser.add_argument(
+        "-p", "--pprint",
+        action="store_true",
+        default=False,
+        dest="pretty_print",
+        help="Nicely indent resulting XML",
         )
     return parser.parse_args(args)
 
